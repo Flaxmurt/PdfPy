@@ -4,6 +4,8 @@ A Python utility for partitioning PDF documents into discrete files based on cha
 
 Pdfpy employs a dual-method approach for chapter detection. It prioritizes the document's bookmark hierarchy for high-accuracy splitting. If bookmarks are absent, it falls back to a configurable, style-based heuristic analysis, identifying chapter titles by font properties and keywords. The tool is operated via a simple drag-and-drop command-line interface on Windows.
 
+Note: I use this with NotebookLM in my studies to focus on one chapter at a time (together with video & power point from lecture)
+
 ---
 
 ## Features
