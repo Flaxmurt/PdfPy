@@ -1,8 +1,8 @@
-# Pdfpy: Automated PDF Chapter Extraction
+# PdfPy: Automated PDF Chapter Extraction
 
 A Python utility for partitioning PDF documents into discrete files based on chapter divisions.
 
-Pdfpy employs a dual-method approach for chapter detection. It prioritizes the document's bookmark hierarchy for high-accuracy splitting. If bookmarks are absent, it falls back to a configurable, style-based heuristic analysis, identifying chapter titles by font properties and keywords. The tool is operated via a simple drag-and-drop command-line interface on Windows.
+PdfPy employs a dual-method approach for chapter detection. It prioritizes the document's bookmark hierarchy for high-accuracy splitting. If bookmarks are absent, it falls back to a configurable, style-based heuristic analysis, identifying chapter titles by font properties and keywords. The tool is operated via a simple drag-and-drop command-line interface on Windows.
 
 **NotebookLM Tip**: Combine the book chapter with the lecture video and slides.
 
