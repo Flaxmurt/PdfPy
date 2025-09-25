@@ -1,4 +1,3 @@
-```markdown
 # Pdfpy: Automated PDF Chapter Extraction
 
 A Python utility for partitioning PDF documents into discrete files based on chapter divisions.
@@ -80,4 +79,3 @@ If you encounter bugs or want new features, open an issue on the project reposit
 ## License
 
 This project is distributed under the MIT License. See the `LICENSE` file for full details.
-```
