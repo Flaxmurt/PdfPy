@@ -1,8 +1,10 @@
-# Pdfpy: Automated PDF Chapter Extraction
+# PdfPy: Automated PDF Chapter Extraction
 
 A Python utility for partitioning PDF documents into discrete files based on chapter divisions.
 
-Pdfpy employs a dual-method approach for chapter detection. It prioritizes the document's bookmark hierarchy for high-accuracy splitting. If bookmarks are absent, it falls back to a configurable, style-based heuristic analysis, identifying chapter titles by font properties and keywords. The tool is operated via a simple drag-and-drop command-line interface on Windows.
+PdfPy employs a dual-method approach for chapter detection. It prioritizes the document's bookmark hierarchy for high-accuracy splitting. If bookmarks are absent, it falls back to a configurable, style-based heuristic analysis, identifying chapter titles by font properties and keywords. The tool is operated via a simple drag-and-drop command-line interface on Windows.
+
+**NotebookLM Tip**: Combine the book chapter with the lecture video and slides.
 
 ---
 
@@ -18,7 +20,7 @@ Pdfpy employs a dual-method approach for chapter detection. It prioritizes the d
   Heuristic parameters are managed in `chapters_config.md`, separating rules from the core application logic for easy tuning.
 
 - **Drag-and-Drop Interface**  
-  Includes simple batch files (`run_automatic.bat`, `run_manual`.bat) for easy use on Windows.
+  Includes simple batch files (`run_auto.bat`, `run_manual`.bat) for easy use on Windows.
 
 ---
 
@@ -31,7 +33,7 @@ Pdfpy employs a dual-method approach for chapter detection. It prioritizes the d
 
 - **Python 3.7+** — accessible from the command line as `python` and `pip`.  
 - **Dependencies** — listed in `requirements.txt`.  
-- **OS** — Tested on Windows. The provided `run_pdfpy.bat` is Windows-specific.
+- **OS** — Tested on Windows. The provided `run_auto.bat` is Windows-specific.
 
 ---
 
@@ -42,7 +44,7 @@ Pdfpy employs a dual-method approach for chapter detection. It prioritizes the d
     pip install -r requirements.txt
 
 2. **Run the tool**  
-   Drag a PDF file and drop it onto `run_pdfpy.bat`. The batch script will pass the file to the Python utility and start processing.
+   Drag a PDF file and drop it onto `run_auto.bat`. The batch script will pass the file to the Python utility and start processing.
 
 3. **Output**  
    The resulting chapter files are saved to a new `*_chapters` directory created next to the input PDF (one file per detected chapter, or according to any naming convention you configure).
