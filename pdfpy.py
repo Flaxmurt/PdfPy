@@ -45,16 +45,23 @@ def parse_config(config_path: Path) -> Optional[Dict[str, any]]:
                     else:
                         config[key] = value
     except FileNotFoundError:
-        print(f"Error: Configuration file not found at '{config_path}'")
-        return None
+        print(f"Info: Configuration file not found at '{config_path}'. Using defaults.")
+        return {}
     return config
 
 
 def find_chapters_by_style(doc: fitz.Document, config: Dict) -> List[Chapter]:
     """Finds chapter start pages by analyzing text style and content."""
     found_chapters = []
-    keyword = config.get('CHAPTER_KEYWORD', 'Chapter')
-    pattern = re.compile(rf"^{re.escape(keyword)}\s+\d+", re.IGNORECASE)
+
+    regex_pattern = config.get('CHAPTER_REGEX', r'^Chapter\s+\d+')
+    try:
+        pattern = re.compile(regex_pattern, re.IGNORECASE)
+        print(f"\nUsing pattern to find chapters: '{regex_pattern}'")
+    except re.error as e:
+        print(f"Error: Invalid CHAPTER_REGEX in config file. Reason: {e}")
+        return []
+
     min_size = config.get('MIN_FONT_SIZE', 16)
     must_be_bold = config.get('MUST_BE_BOLD', True)
 
@@ -72,7 +79,6 @@ def find_chapters_by_style(doc: fitz.Document, config: Dict) -> List[Chapter]:
                     matches_pattern = pattern.match(text)
 
                     if is_large_enough and bold_ok and matches_pattern:
-                        # Avoid adding duplicate chapters for the same page
                         if not any(c.page == page_num + 1 for c in found_chapters):
                             found_chapters.append(
                                 Chapter(title=text, page=page_num + 1)
@@ -89,18 +95,31 @@ def perform_split(doc: fitz.Document, chapters: List[Chapter], out_dir: Path):
     out_dir.mkdir(parents=True, exist_ok=True)
     chapters.sort(key=lambda x: x.page)
 
+    unique_chapters = []
+    last_page = -1
+    for ch in chapters:
+        if ch.page != last_page:
+            unique_chapters.append(ch)
+            last_page = ch.page
+    chapters = unique_chapters
+
     print(f"\nFound {len(chapters)} sections. Splitting document...")
     for i, chapter in enumerate(chapters):
         start_page = chapter.page - 1
+        # Determine end page
         end_page = doc.page_count - 1
         if i + 1 < len(chapters):
             end_page = chapters[i + 1].page - 2
 
-        if start_page > end_page or start_page < 0 or start_page >= doc.page_count:
-            print(f"Warning: Invalid page range for '{chapter.title}'. Skipping.")
+        if start_page > end_page:
+            print(f"Warning: Skipping '{chapter.title}' due to invalid page range (start: {start_page+1}, end: {end_page+1}).")
+            continue
+        
+        if start_page < 0 or start_page >= doc.page_count:
+            print(f"Warning: Invalid start page for '{chapter.title}'. Skipping.")
             continue
 
-        safe_title = re.sub(r'[\\/*?:"<>|]', "", chapter.title)
+        safe_title = re.sub(r'[\\/*?:"<>|]', "", chapter.title).strip()
         safe_title = safe_title.replace(' ', '_')
         out_path = out_dir / f"{i + 1:02d}_{safe_title}.pdf"
 
@@ -114,27 +133,23 @@ def process_pdf_automatic(doc: fitz.Document, config_path: Path) -> List[Chapter
     """Orchestrates the automatic PDF splitting process."""
     chapters = []
     config = parse_config(config_path)
-    if not config:
-        return []
 
     toc = doc.get_toc()
     if toc:
-        print("\nFound bookmarks. Filtering for main sections.")
-        kw = config.get('CHAPTER_KEYWORD', 'chapter').lower()
-        keywords = {kw, 'appendix', 'index', 'part'}
+        print("\nFound bookmarks. Splitting by all top-level (Level 1) entries.")
         chapters = [
             Chapter(title=item[1], page=item[2])
             for item in toc
-            if item[0] == 1 and any(k in item[1].lower() for k in keywords)
+            if item[0] == 1
         ]
-    else:
+
+    if not chapters:
+        print("\nNo top-level bookmarks found. Analyzing text styles as a fallback.")
         is_text_based = any(page.get_text("text") for page in doc)
         if not is_text_based:
             print("\nERROR: This PDF appears to be image-based (scanned).")
             print("Automatic mode cannot process it. Please use Manual Mode.")
             return []
-
-        print("\nNo bookmarks found. Analyzing text styles.")
         chapters = find_chapters_by_style(doc, config)
 
     return chapters
@@ -191,9 +206,7 @@ def main() -> None:
     if chapters_to_split:
         perform_split(doc, chapters_to_split, output_folder)
     else:
-        # This branch is hit if process_pdf_manual returns None on error
         print("No valid chapters found or an error occurred.")
-
 
     doc.close()
     print("\nProcessing complete.")
