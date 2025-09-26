@@ -20,7 +20,7 @@ PdfPy employs a dual-method approach for chapter detection. It prioritizes the d
   Heuristic parameters are managed in `chapters_config.md`, separating rules from the core application logic for easy tuning.
 
 - **Drag-and-Drop Interface**  
-  Includes simple batch files (`run_automatic.bat`, `run_manual`.bat) for easy use on Windows.
+  Includes simple batch files (`run_auto.bat`, `run_manual`.bat) for easy use on Windows.
 
 ---
 
@@ -33,7 +33,7 @@ PdfPy employs a dual-method approach for chapter detection. It prioritizes the d
 
 - **Python 3.7+** — accessible from the command line as `python` and `pip`.  
 - **Dependencies** — listed in `requirements.txt`.  
-- **OS** — Tested on Windows. The provided `run_automatic.bat` is Windows-specific.
+- **OS** — Tested on Windows. The provided `run_auto.bat` is Windows-specific.
 
 ---
 
@@ -44,7 +44,7 @@ PdfPy employs a dual-method approach for chapter detection. It prioritizes the d
     pip install -r requirements.txt
 
 2. **Run the tool**  
-   Drag a PDF file and drop it onto `run_automatic.bat`. The batch script will pass the file to the Python utility and start processing.
+   Drag a PDF file and drop it onto `run_auto.bat`. The batch script will pass the file to the Python utility and start processing.
 
 3. **Output**  
    The resulting chapter files are saved to a new `*_chapters` directory created next to the input PDF (one file per detected chapter, or according to any naming convention you configure).
