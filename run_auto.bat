@@ -6,17 +6,14 @@ echo Script Directory: %~dp0
 echo Dropped File: %1
 echo ---
 
-pushd "%~dp1"
-if errorlevel 1 (
-echo ERROR: Could not change to directory '%~dp1'.
-pause
-exit /b
-)
-
 echo Executing Python script in Automatic Mode...
-python "%~dp0\pdfpy.py" "%~nx1"
+REM This is the corrected line.
+REM Using "%~1" removes any quotes that Windows may have added to the path
+REM before wrapping it in our own. This ensures paths with spaces are
+REM always handled correctly as a single argument.
+python "%~dp0\pdfpy.py" "%~1"
 
 echo.
 echo Script execution finished.
-popd
 pause
+
